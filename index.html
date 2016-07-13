@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<!-- 
+  This is the dev version of the html application. It is similar to the production version but
+  uses the normal bundle.js and has no bundle.min.css files. The bundle.js is served by webpack,
+  and the bundle.min.css is attached to the document in <script> tags by webpack.
+  -->
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+  </head>
+  <body id="app-body">
+    <div class="react-container"></div>
+  </body>
+  <script src="/dist/bundle.js"></script>
+</html>

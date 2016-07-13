@@ -1,0 +1,116 @@
+@import url(https://fonts.googleapis.com/css?family=Pacifico|Open+Sans:300);
+$font: Open Sans, Arial;
+
+$primary: #0E0816;
+$secondary: #4717F6;
+$tertiary: #E7DFDD;
+
+@mixin noSelect() {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+@mixin blur($pixels) {
+  -webkit-box-shadow: 0px 0px $pixels 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px $pixels 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px $pixels 0px rgba(0,0,0,0.75);
+}
+
+@mixin shadow($width, $opacity) {  
+  -webkit-box-shadow: $width $width $width $width rgba(0,0,0,$opacity);
+  -moz-box-shadow: $width $width $width $width rgba(0,0,0,$opacity);
+  box-shadow: $width $width $width $width rgba(0,0,0,$opacity);
+}
+
+@mixin center() {
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+body {
+  font-family: $font;
+  background-color: $primary;
+  line-height: 2 !important;
+}
+
+#app-container {
+  @include center();
+  width: 100%;
+  height: 70%;
+}
+
+
+.box {
+  border: 2px solid $tertiary;
+  color: $tertiary;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.footer {
+  @include blur(5px);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'sans-serif';
+  background-color: white;
+  text-align: center;
+  height: 60px;
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+}
+
+#info-tab {
+  margin-left: 15px;
+}
+
+.modal {
+  @include center();
+  @include blur(25px);
+  color: $primary;
+  display: block !important;
+  z-index: 2;
+  height: 150px;
+  width: 525px;
+  background-color: $tertiary;
+  padding: 25px;
+  font-family: 'sans-serif';
+  font-size: 24px;
+  text-align: center;
+  border: 2px solid black;
+}
+
+.user-choice {
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  line-height: 60px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 45px;
+  margin: 5px 30px 0px 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  
+  transition: color 0.35s ease-in-out;
+  transition: background-color 0.35s ease-in-out;
+}
+
+.user-choice:hover {
+  color: $tertiary;
+  background-color: $primary;
+  transition: color 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out;
+}
