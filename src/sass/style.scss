@@ -67,6 +67,14 @@ $tertiary: #E7DFDD;
   cursor: pointer;
 }
 
+@mixin active-shadow($background, $shadow) {
+  background-color: $background;
+  box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
+  -webkit-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
+  -moz-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
+  -o-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
+}
+
 html {
   @include noSelect();
   background-image: url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/diagmonds.png);
@@ -208,10 +216,18 @@ body {
   border-bottom-right-radius : 100%;
 }
 
+#blue-container:active{
+  @include active-shadow(hsl(240, 65%, 65%), blue);
+}
+
 #red-container {
   @include wedge(1, 1);
   background-color: hsl(0, 100%, 25%);
   border-top-right-radius : 100%;
+}
+
+#red-container:active {
+  @include active-shadow(hsl(0, 65%, 65%), red);
 }
 
 #green-container {
@@ -220,10 +236,18 @@ body {
   border-top-left-radius : 100%;
 }
 
+#green-container:active {
+  @include active-shadow(hsl(49, 100%, 80%), green);
+}
+
 #yellow-container {
   @include wedge(-1, -1);
   background-color: hsl(60, 100%, 50%);
   border-bottom-left-radius : 100%;
+}
+
+#yellow-container:active {
+  @include active-shadow(hsl(120, 100%, 65%), yellow);
 }
 
 .shadow{

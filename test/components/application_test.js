@@ -17,11 +17,5 @@ describe('Application', () => {
   it('Renders something', () => {
     expect(component).to.exist;
   });
-  
-  describe('Tic Tac Toe', () => {
-    it('should have nine boxes', () => {
-      expect(component.find('.box')).to.have.length(9);
-    });
-  });
 
 });

@@ -13,45 +13,68 @@ export default class Application extends Component {
     super(props);
     this.state = {
       showModal: false,
-      result: '',
+      message: '',
       difficulty: 1,
-      on: false,
+      on: true,
       strict: false,
       started: false,
-      sequenceActive: true,
+      sequenceActive: false,
       activeColor: undefined,
-      count: 10,
+      indexes: [],
+      selectedIndexes: [],
+      count: 1,
     };
     this.incrementDifficulty = this.incrementDifficulty.bind(this);
     this.findDifficultyMargin = this.findDifficultyMargin.bind(this);
     this.randomColor = this.randomColor.bind(this);
+    this.playColors = this.playColors.bind(this);
+    this.checkIndexes = this.checkIndexes.bind(this);
   }
 
-  randomColor() {
-    console.log('starting random');
-    const { count } = this.state;
-
+  randomColor(count) {
+    if (!this.state.on || this.state.sequenceActive) {
+      return;
+    }
     // generate random colors and sounds
     const colors = [];
+    const indexes = [];
     for (let i = 0; i < count; i++) {
       const random = Math.floor(Math.random() * 4) + 1;
+      indexes.push(random);
       colors.push(this.generateColorObjects(random));
     }
-    colors.forEach((color, index) => this.setColor(color, index)); // +1 to
+    this.setState({ indexes, colors, started: true, selectedIndexes: [] });
+    this.playColors(colors);
   }
 
-  setColor(activeColor, i) {
+  playColors(colors) {
+    this.setState({ sequenceActive: true, showModal: false });
     setTimeout(() => {
-      console.log(activeColor.sound);
-      this.setState({ activeColor }, this.resetColor);
-    }, (i + 1) * 2500); // the timeout length is based on the index of the array which is zero based
+      const processed = colors.reduce((promiseChain, color) => {
+        return promiseChain.then(() => new Promise((resolve, index) => {
+          this.setColor(color, index, resolve);
+        }));
+      }, Promise.resolve());
+
+      processed.then(() => {
+        this.setState({ sequenceActive: false });
+      });
+    }, 1000);
   }
 
-  resetColor() {
+  setColor(activeColor, i, callback) {
+    setTimeout(() => {
+      new Audio(activeColor.sound).play();
+      this.setState({ activeColor }, this.resetColor(callback));
+    }, (i + 1) * 1500); // the timeout length is based on the index of the array which is zero based
+  }
+
+  resetColor(callback) {
     setTimeout(() => {
       console.log('resetting');
       this.setState({ activeColor: undefined });
-    }, 1500);
+      callback();
+    }, 1000);
   }
 
   generateColorObjects(random) {
@@ -85,6 +108,48 @@ export default class Application extends Component {
     }
   }
 
+  checkIndexes(n) {
+    const { started, sequenceActive, indexes, colors, selectedIndexes, count, strict } = this.state;
+
+    if (started && !sequenceActive) {
+      const updatedSelected = JSON.parse(JSON.stringify(selectedIndexes));
+      updatedSelected.push(n);
+      this.setState({ selectedIndexes: updatedSelected });
+
+      const indexesSoFar = indexes.slice(0, updatedSelected.length);
+      if (indexesSoFar.join(',') === updatedSelected.join(',')
+          && indexes.length === updatedSelected.length) {
+        console.log('Win');
+        this.setState({
+          count: count + 1,
+          sequenceActive: true,
+        }, this.randomColor(count + 1));
+        
+      } else if (indexesSoFar.join(',') === updatedSelected.join(',')) {
+        console.log('Continue');
+      } else if (strict) {
+        console.log('Lose - strict');
+        new Audio('/static/buzzer.mp3').play();
+        this.setState({
+          message: 'Incorrect! You lose - restarting game to 1.',
+          showModal: true,
+          count: 1,
+          sequenceActive: false,
+          started: false,
+        });
+      } else {
+        console.log('Lose - replay');
+        new Audio('/static/buzzer.mp3').play();
+        this.setState({
+          message: 'Incorrect! Replaying the sequence.',
+          showModal: true,
+          selectedIndexes: [],
+          sequenceActive: true,
+        });
+      }
+    }
+  }
+
   incrementDifficulty() {
     const { difficulty } = this.state;
     if (difficulty === 3) {
@@ -110,29 +175,33 @@ export default class Application extends Component {
   }
 
   render() {
-    const { showModal, result, count, on, strict, activeColor } = this.state;
+    const { showModal, count, on, strict, activeColor, message, colors } = this.state;
 
     return (
       <div>
-        {showModal ? <Modal result={result} /> : ''}
+        {showModal ? <Modal hideModal={() => this.playColors(colors)} message={message} /> : ''}
         <div id="app-container" style={showModal ? { opacity: '0.3' } : {}} >
           <div
             id="red-container"
+            onClick={() => this.checkIndexes(1)}
             style={{ backgroundColor: activeColor && activeColor.index === 1 ? activeColor.color : '' }}
             className="wedge"
           />
           <div
             id="blue-container"
+            onClick={() => this.checkIndexes(2)}
             style={{ backgroundColor: activeColor && activeColor.index === 2 ? activeColor.color : '' }}
             className="wedge"
           />
           <div
             id="yellow-container"
+            onClick={() => this.checkIndexes(3)}
             style={{ backgroundColor: activeColor && activeColor.index === 3 ? activeColor.color : '' }}
             className="wedge"
           />
           <div
             id="green-container"
+            onClick={() => this.checkIndexes(4)}
             style={{ backgroundColor: activeColor && activeColor.index === 4 ? activeColor.color : '' }}
             className="wedge"
           />
@@ -146,7 +215,7 @@ export default class Application extends Component {
                   <div className="label" style={{ width: '60px' }} >Count</div>
                 </div>
                 <div className="setting-row-item" style={{ marginLeft: '20px' }}>
-                  <div id="start-button" onClick={() => this.randomColor()} />
+                  <div id="start-button" onClick={() => this.randomColor(count)} />
                   <span className="label" >Start</span>
                 </div>
                 <div className="setting-row-item">

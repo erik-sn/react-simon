@@ -29,15 +29,5 @@ describe('Modal', () => {
   it('contains the props text', () => {
     expect(component.find('#modal-text').html()).to.contain(props.text);
   });
-
-  it('calls the props function on .user-choice click', () => {
-    component.find('.user-choice').first().simulate('click');
-    expect(choice.callCount).to.equal(1);
-  });
-
-  it('returns the correct value when .user-choice is clicked', () => {
-    component.find('.user-choice').first().simulate('click');
-    expect(choice.returned('X')).to.equal(true);
-  });
   
 });
