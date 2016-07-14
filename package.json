@@ -1,9 +1,9 @@
 {
-  "name": "react-tictactoe",
+  "name": "react-simon",
   "version": "1.0.0",
-  "description": "Tic tac toe game for Free Code Camp",
+  "description": "Simon says game for Free Code Camp",
   "main": "index.js",
-  "repository": "",
+  "repository": "https://github.com/kiresuah/react-simon",
   "scripts": {
     "dev": "node server.js",
     "test:watch": "npm run test -- --watch",

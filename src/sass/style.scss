@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Pacifico|Open+Sans:300);
+@import url('https://fonts.googleapis.com/css?family=Alfa+Slab+One|VT323|Oswald');
 $font: Open Sans, Arial;
 
 $primary: #0E0816;
@@ -16,15 +16,21 @@ $tertiary: #E7DFDD;
 }
 
 @mixin blur($pixels) {
-  -webkit-box-shadow: 0px 0px $pixels 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px $pixels 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px $pixels 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 0px 0px $pixels 0px rgba(34,34,34,0.5);
+  -moz-box-shadow: 0px 0px $pixels 0px rgba(34,34,34,0.5);
+  box-shadow: 0px 0px $pixels 0px rgba(34,34,34,0.5);
 }
 
 @mixin shadow($width, $opacity) {  
-  -webkit-box-shadow: $width $width $width $width rgba(0,0,0,$opacity);
-  -moz-box-shadow: $width $width $width $width rgba(0,0,0,$opacity);
-  box-shadow: $width $width $width $width rgba(0,0,0,$opacity);
+  -webkit-box-shadow: $width $width $width $width rgba(34,34,34,$opacity);
+  -moz-box-shadow: $width $width $width $width rgba(34,34,34,$opacity);
+  box-shadow: $width $width $width $width rgba(34,34,34,$opacity);
+}
+
+@mixin border-shadow($width) {
+  -webkit-box-shadow: 0px 0px 2px $width rgba(34,34,34,1);
+  -moz-box-shadow: 0px 0px 2px $width rgba(34,34,34,1);
+  box-shadow: 0px 0px 2px $width rgba(34,34,34,1);
 }
 
 @mixin center() {
@@ -36,25 +42,198 @@ $tertiary: #E7DFDD;
   margin: auto;
 }
 
+@mixin circle($diameter, $color) {
+  @include center();
+  background-color: $color;
+  width: $diameter;
+  height: $diameter;
+  border-radius: 50%;
+}
+
+@mixin wedge($left, $bottom) {
+  @include center();
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.5);
+  height: 250px;
+  width: 250px;
+  left: $left * 280px;
+  bottom: $bottom * 280px;
+  cursor: pointer;
+}
+
+html {
+  @include noSelect();
+  background-image: url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/diagmonds.png);
+}
+
 body {
   font-family: $font;
-  background-color: $primary;
-  line-height: 2 !important;
 }
 
 #app-container {
-  @include center();
-  width: 100%;
-  height: 70%;
+  @include circle(600px, #222);
+  @include blur(45px);
 }
 
 
-.box {
-  border: 2px solid $tertiary;
-  color: $tertiary;
-  display: inline-block;
+#center-container {
+  @include circle(275px, silver);
+  @include blur(8px);
+}
+
+#label-container {
+  @include circle(265px, black);
+  border: 2px solid black;
+  font-family: oswald;
+  background: 
+  linear-gradient(180deg, black 43%, transparent 35%) 0 0;
   text-align: center;
+  color: silver;
+  font-size: 60px;
+  line-height: 100%;
+  padding-top: 50px;
+}
+
+#settings-container {
+  position: absolute;
+  bottom: 60px;
+  width: 265px;
+}
+
+.label {
+  text-align: center;
+  width: 100%;
+}
+
+.setting-row {
+  text-align: center;
+}
+.setting-row-item {
+  width: 50px;
+  display: inline-block;
+}
+
+#counter {
+  @include border-shadow(3px);
+  height: 40px;
+  line-height: 40px;
+  width: 60px;
+  background-color: black;
+  color: red;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 30px;
+}
+
+#start-button {
+  @include border-shadow(5px);
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  background-color: red;
+  border-radius: 50%;
+  margin-left: 15px;
+  margin-bottom: 5px;
+}
+
+#strict-mode {
+  @include border-shadow(3px);
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background-color: black;
+  margin-left: 19px;
+  margin-bottom: 10px;
+}
+
+#strict-button {
+  @include border-shadow(5px);
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  background-color: yellow;
+  border-radius: 50%;
+  margin-left: 13px;
+  margin-bottom: 5px;
+}
+
+.switch-child {
   vertical-align: middle;
+  display: inline-block;
+  margin-left: 2px;
+}
+
+#onoff-container {
+  margin-left: 10px;
+  height: 20px;
+}
+
+#onoff-switch-container {
+  width: 40px;
+  background-color: #222;
+  padding: 1px;
+}
+
+#onoff-switch {
+  @include blur(3px);
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  background-color: #3193DE;
+  border-radius: 2px;
+}
+
+#center-border-container {
+  @include circle(325px, #222);
+  
+}
+
+#blue-container {
+  @include wedge(1, -1);
+  background-color: hsl(230, 100%, 25%);
+  border-bottom-right-radius : 100%;
+}
+
+#blue-container:hover {
+  background-color: hsl(240, 65%, 65%);
+}
+
+#red-container {
+  @include wedge(1, 1);
+  background-color: hsl(0, 100%, 25%);
+  border-top-right-radius : 100%;
+}
+
+#red-container:hover {
+  background-color: hsl(0, 65%, 65%);
+}
+
+#green-container {
+  @include wedge(-1, 1);
+  background-color: hsl(120, 100%, 25%);
+  border-top-left-radius : 100%;
+}
+
+#green-container:hover {
+  background-color: hsl(120, 100%, 65%);
+}
+
+#yellow-container {
+  @include wedge(-1, -1);
+  background-color: hsl(60, 100%, 50%);
+  border-bottom-left-radius : 100%;
+}
+
+#yellow-container:hover {
+  background-color: hsl(49, 100%, 80%);
+}
+
+.shadow{
+  box-shadow: inset 0px 0px 50px -9px #000000,-1px 1px 5px -2px #222222;
+  -webkit-box-shadow: inset 0px 0px 50px -9px #000000,-1px 1px 5px -2px #222222;
+  -moz-box-shadow: inset 0px 0px 50px -9px #000000,-1px 1px 5px -2px #222222;
+  -o-box-shadow: inset 0px 0px 50px -9px #000000,-1px 1px 5px -2px #222222;
 }
 
 .footer {
