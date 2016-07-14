@@ -16,6 +16,7 @@ export default class Application extends Component {
       difficulty: 1,
       on: false,
       strict: false,
+      started: false,
       count: '--',
     };
     this.incrementDifficulty = this.incrementDifficulty.bind(this);
@@ -47,7 +48,7 @@ export default class Application extends Component {
   }
 
   render() {
-    const { showModal, result, count, on, strict } = this.state;   
+    const { showModal, result, count, on, strict } = this.state;
 
     return (
       <div>
@@ -67,7 +68,7 @@ export default class Application extends Component {
                   <div className="label" style={{ width: '60px' }} >Count</div>
                 </div>
                 <div className="setting-row-item" style={{ marginLeft: '20px' }}>
-                  <div id="start-button" />
+                  <div id="start-button" onClick={() => this.setState({ started: true })} />
                   <span className="label" >Start</span>
                 </div>
                 <div className="setting-row-item">
