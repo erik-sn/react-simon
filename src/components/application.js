@@ -5,6 +5,7 @@ if (process.env.BROWSER) {
 import React, { Component } from 'react';
 import Modal from './modal';
 import Footer from './footer';
+import { Exception } from '../utility/functions';
 
 export default class Application extends Component {
 
@@ -17,10 +18,71 @@ export default class Application extends Component {
       on: false,
       strict: false,
       started: false,
-      count: '--',
+      sequenceActive: true,
+      activeColor: undefined,
+      count: 10,
     };
     this.incrementDifficulty = this.incrementDifficulty.bind(this);
     this.findDifficultyMargin = this.findDifficultyMargin.bind(this);
+    this.randomColor = this.randomColor.bind(this);
+  }
+
+  randomColor() {
+    console.log('starting random');
+    const { count } = this.state;
+
+    // generate random colors and sounds
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+      const random = Math.floor(Math.random() * 4) + 1;
+      colors.push(this.generateColorObjects(random));
+    }
+    colors.forEach((color, index) => this.setColor(color, index)); // +1 to
+  }
+
+  setColor(activeColor, i) {
+    setTimeout(() => {
+      console.log(activeColor.sound);
+      this.setState({ activeColor }, this.resetColor);
+    }, (i + 1) * 2500); // the timeout length is based on the index of the array which is zero based
+  }
+
+  resetColor() {
+    setTimeout(() => {
+      console.log('resetting');
+      this.setState({ activeColor: undefined });
+    }, 1500);
+  }
+
+  generateColorObjects(random) {
+    switch (random) {
+      case 1:
+        return {
+          index: 1,
+          color: 'hsl(0, 65%, 65%)',
+          sound: 'https://s3.amazonaws.com/freecodecamp/simonSound1.mp3',
+        };
+      case 2:
+        return {
+          index: 2,
+          color: 'hsl(240, 65%, 65%)',
+          sound: 'https://s3.amazonaws.com/freecodecamp/simonSound2.mp3',
+        };
+      case 3:
+        return {
+          index: 3,
+          color: 'hsl(49, 100%, 80%)',
+          sound: 'https://s3.amazonaws.com/freecodecamp/simonSound3.mp3',
+        };
+      case 4:
+        return {
+          index: 4,
+          color: 'hsl(120, 100%, 65%)',
+          sound: 'https://s3.amazonaws.com/freecodecamp/simonSound4.mp3',
+        };
+      default:
+        throw new Exception('Random number must be between 1 and 4');
+    }
   }
 
   incrementDifficulty() {
@@ -48,16 +110,32 @@ export default class Application extends Component {
   }
 
   render() {
-    const { showModal, result, count, on, strict } = this.state;
+    const { showModal, result, count, on, strict, activeColor } = this.state;
 
     return (
       <div>
         {showModal ? <Modal result={result} /> : ''}
         <div id="app-container" style={showModal ? { opacity: '0.3' } : {}} >
-          <div id="green-container" className="wedge" />
-          <div id="red-container" className="wedge" />
-          <div id="blue-container" className="wedge" />
-          <div id="yellow-container" className="wedge" />
+          <div
+            id="red-container"
+            style={{ backgroundColor: activeColor && activeColor.index === 1 ? activeColor.color : '' }}
+            className="wedge"
+          />
+          <div
+            id="blue-container"
+            style={{ backgroundColor: activeColor && activeColor.index === 2 ? activeColor.color : '' }}
+            className="wedge"
+          />
+          <div
+            id="yellow-container"
+            style={{ backgroundColor: activeColor && activeColor.index === 3 ? activeColor.color : '' }}
+            className="wedge"
+          />
+          <div
+            id="green-container"
+            style={{ backgroundColor: activeColor && activeColor.index === 4 ? activeColor.color : '' }}
+            className="wedge"
+          />
           <div id="center-border-container" />
           <div id="center-container">
             <div id="label-container">Simon</div>
@@ -68,7 +146,7 @@ export default class Application extends Component {
                   <div className="label" style={{ width: '60px' }} >Count</div>
                 </div>
                 <div className="setting-row-item" style={{ marginLeft: '20px' }}>
-                  <div id="start-button" onClick={() => this.setState({ started: true })} />
+                  <div id="start-button" onClick={() => this.randomColor()} />
                   <span className="label" >Start</span>
                 </div>
                 <div className="setting-row-item">

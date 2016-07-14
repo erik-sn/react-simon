@@ -123,7 +123,7 @@ body {
   @include border-shadow(3px);
   font-family: 'digital';
   height: 40px;
-  line-height: 30px;
+  line-height: 40px;
   width: 60px;
   background-color: black;
   color: red;
@@ -208,18 +208,10 @@ body {
   border-bottom-right-radius : 100%;
 }
 
-#blue-container:hover {
-  background-color: hsl(240, 65%, 65%);
-}
-
 #red-container {
   @include wedge(1, 1);
   background-color: hsl(0, 100%, 25%);
   border-top-right-radius : 100%;
-}
-
-#red-container:hover {
-  background-color: hsl(0, 65%, 65%);
 }
 
 #green-container {
@@ -228,18 +220,10 @@ body {
   border-top-left-radius : 100%;
 }
 
-#green-container:hover {
-  background-color: hsl(120, 100%, 65%);
-}
-
 #yellow-container {
   @include wedge(-1, -1);
   background-color: hsl(60, 100%, 50%);
   border-bottom-left-radius : 100%;
-}
-
-#yellow-container:hover {
-  background-color: hsl(49, 100%, 80%);
 }
 
 .shadow{
