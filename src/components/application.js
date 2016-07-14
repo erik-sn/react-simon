@@ -13,14 +13,41 @@ export default class Application extends Component {
     this.state = {
       showModal: false,
       result: '',
+      difficulty: 1,
       on: false,
       strict: false,
-      count: '25',
+      count: '--',
     };
+    this.incrementDifficulty = this.incrementDifficulty.bind(this);
+    this.findDifficultyMargin = this.findDifficultyMargin.bind(this);
+  }
+
+  incrementDifficulty() {
+    const { difficulty } = this.state;
+    if (difficulty === 3) {
+      this.setState({ difficulty: 1 });
+    } else {
+      this.setState({ difficulty: difficulty + 1 });
+    }
+  }
+
+  findDifficultyMargin() {
+    let marginLeft;
+    switch (this.state.difficulty) {
+      case 1:
+        marginLeft = '0px';
+        break;
+      case 2:
+        marginLeft = '20px';
+        break;
+      default:
+        marginLeft = '38px';
+    }
+    return marginLeft;
   }
 
   render() {
-    const { showModal, result, count, on, strict } = this.state;
+    const { showModal, result, count, on, strict } = this.state;   
 
     return (
       <div>
@@ -50,7 +77,18 @@ export default class Application extends Component {
                 </div>
               </div>
               <div className="setting-row">
-                <div id="onoff-container">
+                <div id="switch-container">
+                  <span className="switch-child" >1</span>
+                  <div className="switch-child shadow" id="difficulty-switch-container">
+                    <div
+                      style={{ marginLeft: this.findDifficultyMargin() }}
+                      id="onoff-switch"
+                      onClick={this.incrementDifficulty}
+                    />
+                  </div>
+                  <span className="switch-child">3</span>
+                </div>
+                <div id="switch-container">
                   <span className="switch-child" >OFF</span>
                   <div className="switch-child shadow" id="onoff-switch-container">
                     <div

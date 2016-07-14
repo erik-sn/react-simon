@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Alfa+Slab+One|VT323|Oswald');
 $font: Open Sans, Arial;
 
+@font-face {
+  font-family:"Digital";
+  src: url("/static/digital.ttf") /* TTF file for CSS3 browsers */
+}
+
 $primary: #0E0816;
 $secondary: #4717F6;
 $tertiary: #E7DFDD;
@@ -97,7 +102,7 @@ body {
 
 #settings-container {
   position: absolute;
-  bottom: 60px;
+  bottom: 15px;
   width: 265px;
 }
 
@@ -116,14 +121,15 @@ body {
 
 #counter {
   @include border-shadow(3px);
+  font-family: 'digital';
   height: 40px;
-  line-height: 40px;
+  line-height: 30px;
   width: 60px;
   background-color: black;
   color: red;
   border-radius: 8px;
   text-align: center;
-  font-size: 30px;
+  font-size: 50px;
 }
 
 #start-button {
@@ -164,9 +170,16 @@ body {
   margin-left: 2px;
 }
 
-#onoff-container {
-  margin-left: 10px;
+
+#switch-container {
+  margin: 0px 0px 10px 10px;
   height: 20px;
+}
+
+#difficulty-switch-container {
+  width: 60px;
+  background-color: #222;
+  padding: 1px;
 }
 
 #onoff-switch-container {
