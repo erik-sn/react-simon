@@ -1,3 +1,3 @@
-# Tic Tac Toe
+# Simon
 
-FreeCodeCamp project to build a tic tac toe game with AI. Implemented using React/es6.
+FreeCodeCamp project to build a Simon game. Implemented using React/es6.
