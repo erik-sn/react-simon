@@ -6,10 +6,6 @@ $font: Open Sans, Arial;
   src: url("/static/digital.ttf") /* TTF file for CSS3 browsers */
 }
 
-$primary: #0E0816;
-$secondary: #4717F6;
-$tertiary: #E7DFDD;
-
 @mixin noSelect() {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -68,11 +64,11 @@ $tertiary: #E7DFDD;
 }
 
 @mixin active-shadow($background, $shadow) {
-  background-color: $background;
-  box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
-  -webkit-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
-  -moz-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
-  -o-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222;
+  background-color: $background !important;
+  box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222 !important;
+  -webkit-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222 !important;
+  -moz-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222 !important;
+  -o-box-shadow: inset 0px -2px 23px 0px $shadow,2px 1px 48px 1px #222222 !important;
 }
 
 html {
@@ -93,6 +89,14 @@ body {
 #center-container {
   @include circle(275px, silver);
   @include blur(8px);
+  background: rgba(192,192,192,0.73);
+  background: -moz-radial-gradient(center, ellipse cover, rgba(192,192,192,0.73) 0%, rgba(192,192,192,1) 0%, rgba(201,195,201,1) 22%, rgba(212,201,212,1) 50%, rgba(199,195,199,1) 76%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(192,192,192,0.73)), color-stop(0%, rgba(192,192,192,1)), color-stop(22%, rgba(201,195,201,1)), color-stop(50%, rgba(212,201,212,1)), color-stop(76%, rgba(199,195,199,1)));
+  background: -webkit-radial-gradient(center, ellipse cover, rgba(192,192,192,0.73) 0%, rgba(192,192,192,1) 0%, rgba(201,195,201,1) 22%, rgba(212,201,212,1) 50%, rgba(199,195,199,1) 76%);
+  background: -o-radial-gradient(center, ellipse cover, rgba(192,192,192,0.73) 0%, rgba(192,192,192,1) 0%, rgba(201,195,201,1) 22%, rgba(212,201,212,1) 50%, rgba(199,195,199,1) 76%);
+  background: -ms-radial-gradient(center, ellipse cover, rgba(192,192,192,0.73) 0%, rgba(192,192,192,1) 0%, rgba(201,195,201,1) 22%, rgba(212,201,212,1) 50%, rgba(199,195,199,1) 76%);
+  background: radial-gradient(ellipse at center, rgba(192,192,192,0.73) 0%, rgba(192,192,192,1) 0%, rgba(201,195,201,1) 22%, rgba(212,201,212,1) 50%, rgba(199,195,199,1) 76%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c0c0c0', endColorstr='#c7c3c7', GradientType=1 );
 }
 
 #label-container {
@@ -214,40 +218,49 @@ body {
   @include wedge(1, -1);
   background-color: hsl(230, 100%, 25%);
   border-bottom-right-radius : 100%;
+  transition: background-color 0.15s ease-in;
 }
 
-#blue-container:active{
+.blue-active:active{
   @include active-shadow(hsl(240, 65%, 65%), blue);
+  transition: background-color .15s ease-out;
 }
 
 #red-container {
   @include wedge(1, 1);
   background-color: hsl(0, 100%, 25%);
   border-top-right-radius : 100%;
+  transition: background-color 0.15s ease-in;
 }
 
-#red-container:active {
+.red-active:active {
   @include active-shadow(hsl(0, 65%, 65%), red);
+  transition: background-color .15s ease-out;
 }
 
 #green-container {
   @include wedge(-1, 1);
   background-color: hsl(120, 100%, 25%);
   border-top-left-radius : 100%;
+  transition: background-color 0.15s ease-in;
+
 }
 
-#green-container:active {
+.green-active:active {
   @include active-shadow(hsl(49, 100%, 80%), green);
+  transition: background-color .15s ease-out;
 }
 
 #yellow-container {
   @include wedge(-1, -1);
   background-color: hsl(60, 100%, 50%);
   border-bottom-left-radius : 100%;
+  transition: background-color 0.15s ease-in;
 }
 
-#yellow-container:active {
+.yellow-active:active {
   @include active-shadow(hsl(120, 100%, 65%), yellow);
+  transition: background-color .15s ease-out;
 }
 
 .shadow{
@@ -279,38 +292,15 @@ body {
 .modal {
   @include center();
   @include blur(25px);
-  color: $primary;
+  color: black;
   display: block !important;
   z-index: 2;
   height: 150px;
   width: 525px;
-  background-color: $tertiary;
+  background-color: white;
   padding: 25px;
   font-family: 'sans-serif';
   font-size: 24px;
   text-align: center;
   border: 2px solid black;
-}
-
-.user-choice {
-  display: inline-block;
-  height: 60px;
-  width: 60px;
-  line-height: 60px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 45px;
-  margin: 5px 30px 0px 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  
-  transition: color 0.35s ease-in-out;
-  transition: background-color 0.35s ease-in-out;
-}
-
-.user-choice:hover {
-  color: $tertiary;
-  background-color: $primary;
-  transition: color 0.5s ease-in-out;
-  transition: background-color 0.5s ease-in-out;
 }

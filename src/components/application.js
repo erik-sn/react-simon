@@ -5,6 +5,7 @@ if (process.env.BROWSER) {
 import React, { Component } from 'react';
 import Modal from './modal';
 import Footer from './footer';
+import Wedge from './wedge';
 import { Exception } from '../utility/functions';
 
 export default class Application extends Component {
@@ -22,19 +23,45 @@ export default class Application extends Component {
       activeColor: undefined,
       indexes: [],
       selectedIndexes: [],
-      count: 1,
+      count: '--',
+      gameOver: false,
     };
+    this.togglePower = this.togglePower.bind(this);
     this.incrementDifficulty = this.incrementDifficulty.bind(this);
     this.findDifficultyMargin = this.findDifficultyMargin.bind(this);
-    this.randomColor = this.randomColor.bind(this);
+    this.randomColors = this.randomColors.bind(this);
     this.playColors = this.playColors.bind(this);
     this.checkIndexes = this.checkIndexes.bind(this);
   }
 
-  randomColor(count) {
+  togglePower() {
+    const { on } = this.state;
+    if (on) {
+      this.setState({
+        on: false,
+        strict: false,
+        started: false,
+        sequenceActive: false,
+        indexes: [],
+        selectedIndexes: [],
+        count: '',
+      });
+    } else {
+      this.setState({
+        on: true,
+        count: '--',
+      });
+    }
+  }
+
+  randomColors(count) {
     if (!this.state.on || this.state.sequenceActive) {
       return;
+    } else if (count === '--') {
+      count = 1;
+      this.setState({ count });
     }
+
     // generate random colors and sounds
     const colors = [];
     const indexes = [];
@@ -71,10 +98,9 @@ export default class Application extends Component {
 
   resetColor(callback) {
     setTimeout(() => {
-      console.log('resetting');
       this.setState({ activeColor: undefined });
       callback();
-    }, 1000);
+    }, (1000 / this.state.difficulty));
   }
 
   generateColorObjects(random) {
@@ -109,45 +135,64 @@ export default class Application extends Component {
   }
 
   checkIndexes(n) {
-    const { started, sequenceActive, indexes, colors, selectedIndexes, count, strict } = this.state;
-
+    const { started, sequenceActive, indexes, selectedIndexes, count, strict } = this.state;
     if (started && !sequenceActive) {
       const updatedSelected = JSON.parse(JSON.stringify(selectedIndexes));
       updatedSelected.push(n);
-      this.setState({ selectedIndexes: updatedSelected });
-
       const indexesSoFar = indexes.slice(0, updatedSelected.length);
       if (indexesSoFar.join(',') === updatedSelected.join(',')
           && indexes.length === updatedSelected.length) {
-        console.log('Win');
-        this.setState({
-          count: count + 1,
-          sequenceActive: true,
-        }, this.randomColor(count + 1));
-        
+        this.win(count);
       } else if (indexesSoFar.join(',') === updatedSelected.join(',')) {
-        console.log('Continue');
+        this.setState({ selectedIndexes: updatedSelected });
+        return;
       } else if (strict) {
-        console.log('Lose - strict');
-        new Audio('/static/buzzer.mp3').play();
-        this.setState({
-          message: 'Incorrect! You lose - restarting game to 1.',
-          showModal: true,
-          count: 1,
-          sequenceActive: false,
-          started: false,
-        });
+        this.lose();
       } else {
-        console.log('Lose - replay');
-        new Audio('/static/buzzer.mp3').play();
-        this.setState({
-          message: 'Incorrect! Replaying the sequence.',
-          showModal: true,
-          selectedIndexes: [],
-          sequenceActive: true,
-        });
+        this.replay();
       }
     }
+  }
+
+  win(count) {
+    new Audio('/static/ding.mp3').play();
+    if (count === 20) {
+      this.setState({
+        message: 'You Win! Congratulations!',
+        showModal: true,
+        count: '--',
+        sequenceActive: false,
+        started: false,
+        gameOver: true,
+      });
+    } else {
+      this.setState({
+        count: count + 1,
+        sequenceActive: true,
+      }, this.randomColors(count + 1));
+    }
+  }
+
+  lose() {
+    new Audio('/static/boom.mp3').play();
+    this.setState({
+      message: 'Incorrect! You lose.',
+      showModal: true,
+      count: '--',
+      sequenceActive: false,
+      started: false,
+      gameOver: true,
+    });
+  }
+
+  replay() {
+    new Audio('/static/boom.mp3').play();
+    this.setState({
+      message: 'Incorrect! Replaying the sequence.',
+      showModal: true,
+      selectedIndexes: [],
+      sequenceActive: true,
+    });
   }
 
   incrementDifficulty() {
@@ -175,36 +220,25 @@ export default class Application extends Component {
   }
 
   render() {
-    const { showModal, count, on, strict, activeColor, message, colors } = this.state;
+    const { showModal, count, on, started, strict, activeColor, message, 
+      colors, sequenceActive, gameOver } = this.state;
+    const modal = (
+      <Modal
+        message={message}
+        hideModal={!gameOver ? () => this.playColors(colors) :
+          () => this.setState({ showModal: false })}
+      />
+    );
+    const wedgeProps = { checkIndexes: this.checkIndexes, activeColor, sequenceActive, started };
 
     return (
       <div>
-        {showModal ? <Modal hideModal={() => this.playColors(colors)} message={message} /> : ''}
+        {showModal ? modal : ''}
         <div id="app-container" style={showModal ? { opacity: '0.3' } : {}} >
-          <div
-            id="red-container"
-            onClick={() => this.checkIndexes(1)}
-            style={{ backgroundColor: activeColor && activeColor.index === 1 ? activeColor.color : '' }}
-            className="wedge"
-          />
-          <div
-            id="blue-container"
-            onClick={() => this.checkIndexes(2)}
-            style={{ backgroundColor: activeColor && activeColor.index === 2 ? activeColor.color : '' }}
-            className="wedge"
-          />
-          <div
-            id="yellow-container"
-            onClick={() => this.checkIndexes(3)}
-            style={{ backgroundColor: activeColor && activeColor.index === 3 ? activeColor.color : '' }}
-            className="wedge"
-          />
-          <div
-            id="green-container"
-            onClick={() => this.checkIndexes(4)}
-            style={{ backgroundColor: activeColor && activeColor.index === 4 ? activeColor.color : '' }}
-            className="wedge"
-          />
+          <Wedge index={1} color="red" {...wedgeProps} />
+          <Wedge index={2} color="blue" {...wedgeProps} />
+          <Wedge index={3} color="yellow" {...wedgeProps} />
+          <Wedge index={4} color="green" {...wedgeProps} />
           <div id="center-border-container" />
           <div id="center-container">
             <div id="label-container">Simon</div>
@@ -215,7 +249,7 @@ export default class Application extends Component {
                   <div className="label" style={{ width: '60px' }} >Count</div>
                 </div>
                 <div className="setting-row-item" style={{ marginLeft: '20px' }}>
-                  <div id="start-button" onClick={() => this.randomColor(count)} />
+                  <div id="start-button" onClick={() => this.randomColors(count)} />
                   <span className="label" >Start</span>
                 </div>
                 <div className="setting-row-item">
@@ -242,7 +276,7 @@ export default class Application extends Component {
                     <div
                       style={{ float: on ? 'right' : 'left' }}
                       id="onoff-switch"
-                      onClick={() => this.setState({ on: !on })}
+                      onClick={() => this.togglePower()}
                     />
                   </div>
                   <span className="switch-child">ON</span>

@@ -3,7 +3,7 @@ import React from 'react';
 const Modal = (props) => {
   const { message, hideModal } = props;
   return (
-    <div onClick={hideModal} className="modal" style={{height: message !== '' ? '225px' : '150px' }}>
+    <div onClick={hideModal} className="modal" >
       {message !== '' ? <h1>{message}</h1> : ''}
     </div>
   );
