@@ -30,8 +30,50 @@ export default class Application extends Component {
     this.incrementDifficulty = this.incrementDifficulty.bind(this);
     this.findDifficultyMargin = this.findDifficultyMargin.bind(this);
     this.randomColors = this.randomColors.bind(this);
-    this.playColors = this.playColors.bind(this);
+    this.playSequence = this.playSequence.bind(this);
     this.checkIndexes = this.checkIndexes.bind(this);
+  }
+
+  setColor(activeColor, i, callback) {
+    setTimeout(() => {
+      new Audio(activeColor.sound).play();
+      this.setState({ activeColor }, this.resetColor(callback));
+    }, (i + 1) * 1500); // the timeout length is based on the index of the array which is zero based
+  }
+
+  playSequence(colors) {
+    this.setState({ sequenceActive: true, showModal: false });
+    setTimeout(() => {
+      const processed = colors.reduce((promiseChain, color) => {
+        return promiseChain.then(() => new Promise((resolve, index) => {
+          this.setColor(color, index, resolve);
+        }));
+      }, Promise.resolve());
+
+      processed.then(() => {
+        this.setState({ sequenceActive: false });
+      });
+    }, 1000);
+  }
+
+  randomColors(count) {
+    if (!this.state.on || this.state.sequenceActive) {
+      return;
+    } else if (count === '--') {
+      count = 1;
+      this.setState({ count });
+    }
+
+    // generate random colors and sounds
+    const colors = [];
+    const indexes = [];
+    for (let i = 0; i < count; i++) {
+      const random = Math.floor(Math.random() * 4) + 1;
+      indexes.push(random);
+      colors.push(this.generateColorObjects(random));
+    }
+    this.setState({ indexes, colors, started: true, selectedIndexes: [] });
+    this.playSequence(colors);
   }
 
   togglePower() {
@@ -52,48 +94,6 @@ export default class Application extends Component {
         count: '--',
       });
     }
-  }
-
-  randomColors(count) {
-    if (!this.state.on || this.state.sequenceActive) {
-      return;
-    } else if (count === '--') {
-      count = 1;
-      this.setState({ count });
-    }
-
-    // generate random colors and sounds
-    const colors = [];
-    const indexes = [];
-    for (let i = 0; i < count; i++) {
-      const random = Math.floor(Math.random() * 4) + 1;
-      indexes.push(random);
-      colors.push(this.generateColorObjects(random));
-    }
-    this.setState({ indexes, colors, started: true, selectedIndexes: [] });
-    this.playColors(colors);
-  }
-
-  playColors(colors) {
-    this.setState({ sequenceActive: true, showModal: false });
-    setTimeout(() => {
-      const processed = colors.reduce((promiseChain, color) => {
-        return promiseChain.then(() => new Promise((resolve, index) => {
-          this.setColor(color, index, resolve);
-        }));
-      }, Promise.resolve());
-
-      processed.then(() => {
-        this.setState({ sequenceActive: false });
-      });
-    }, 1000);
-  }
-
-  setColor(activeColor, i, callback) {
-    setTimeout(() => {
-      new Audio(activeColor.sound).play();
-      this.setState({ activeColor }, this.resetColor(callback));
-    }, (i + 1) * 1500); // the timeout length is based on the index of the array which is zero based
   }
 
   resetColor(callback) {
@@ -225,7 +225,7 @@ export default class Application extends Component {
     const modal = (
       <Modal
         message={message}
-        hideModal={!gameOver ? () => this.playColors(colors) :
+        hideModal={!gameOver ? () => this.playSequence(colors) :
           () => this.setState({ showModal: false })}
       />
     );
