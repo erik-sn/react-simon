@@ -33,6 +33,7 @@ export default class Application extends Component {
     this.randomColors = this.randomColors.bind(this);
     this.playSequence = this.playSequence.bind(this);
     this.checkIndexes = this.checkIndexes.bind(this);
+    this.start = this.start.bind(this);
   }
 
   /**
@@ -54,24 +55,24 @@ export default class Application extends Component {
   }
 
   /**
-   * Given an array of color objects play them in sequence using a promise chain
-   * reducer. Add a 1000ms delay before the promise chain starts for aesthetics.
-   * @param  {array} colors - list of color objects to play
+   * Reset the game state to default and start a new game
    */
-  playSequence(colors) {
-    // click on the modal calls this function so we hide it within the setState
-    this.setState({ sequenceActive: true, showModal: false });
-    setTimeout(() => {
-      const processed = colors.reduce((promiseChain, color) => {
-        return promiseChain.then(() => new Promise((resolve, index) => {
-          this.setColor(color, index, resolve);
-        }));
-      }, Promise.resolve());
-      // after all promises are resolved allow user to interact with game
-      processed.then(() => {
-        this.setState({ sequenceActive: false });
-      });
-    }, 1000);
+  start() {
+    this.setState({
+      showModal: false,
+      message: '',
+      on: true,
+      strict: false,
+      started: false,
+      sequenceActive: false,
+      activeColor: undefined,
+      colors: [],
+      indexes: [],
+      selectedIndexes: [],
+      count: '--',
+      gameOver: false,
+    }, () => this.randomColors('--'));
+
   }
 
   /**
@@ -91,36 +92,33 @@ export default class Application extends Component {
     const newIndexes = JSON.parse(JSON.stringify(indexes));
 
     // generate random colors and sounds
-    const test = {
-      one: 0,
-      two: 0,
-      three: 0,
-      four: 0,
-    };
-    for (let i = 0; i < 1000; i++) {
-      const testNum = Math.floor(Math.random() * 4) + 1;
-      switch (testNum) {
-        case 1:
-          test.one = test.one + 1;
-          break;
-        case 2:
-          test.two = test.two + 1;
-          break;
-        case 3:
-          test.three = test.three + 1;
-          break;
-        case 4:
-          test.four = test.four + 1;
-          break;
-      }
-    }
-    console.log(test);
     const random = Math.floor(Math.random() * 4) + 1;
     newIndexes.push(random);
-    newColors.push(this.generateColorObjects(random));
+    newColors.push(this.generateColorObject(random));
 
     this.setState({ indexes: newIndexes, colors: newColors, started: true, selectedIndexes: [] });
     this.playSequence(newColors);
+  }
+
+  /**
+   * Given an array of color objects play them in sequence using a promise chain
+   * reducer. Add a 1000ms delay before the promise chain starts for aesthetics.
+   * @param  {array} colors - list of color objects to play
+   */
+  playSequence(colors) {
+    // click on the modal calls this function so we hide it within the setState
+    this.setState({ sequenceActive: true, showModal: false });
+    setTimeout(() => {
+      const processed = colors.reduce((promiseChain, color) => {
+        return promiseChain.then(() => new Promise((resolve, index) => {
+          this.setColor(color, index, resolve);
+        }));
+      }, Promise.resolve());
+      // after all promises are resolved allow user to interact with game
+      processed.then(() => {
+        this.setState({ sequenceActive: false });
+      });
+    }, 1000);
   }
 
   /**
@@ -166,7 +164,7 @@ export default class Application extends Component {
    * @param  {number} random
    * @return {object} color object
    */
-  generateColorObjects(random) {
+  generateColorObject(random) {
     switch (random) {
       case 1:
         return {
@@ -183,7 +181,7 @@ export default class Application extends Component {
       case 3:
         return {
           index: 3,
-          color: 'hsl(49, 100%, 80%)',
+          color: 'hsl(120, 100%, 90%)',
           sound: 'https://s3.amazonaws.com/freecodecamp/simonSound3.mp3',
         };
       case 4:
@@ -206,6 +204,7 @@ export default class Application extends Component {
   checkIndexes(n) {
     const { started, sequenceActive, indexes, selectedIndexes, count, strict } = this.state;
     if (started && !sequenceActive) {
+      new Audio(this.generateColorObject(n).sound).play();
       const updatedSelected = JSON.parse(JSON.stringify(selectedIndexes));
       updatedSelected.push(n);
       const indexesSoFar = indexes.slice(0, updatedSelected.length);
@@ -236,7 +235,7 @@ export default class Application extends Component {
     new Audio('/static/ding.mp3').play();
     if (count === 20) {
       this.setState({
-        message: 'You Win! Congratulations!',
+        message: 'You Win! Congratulations! Click here to start a new game.',
         showModal: true,
         count: '--',
         sequenceActive: false,
@@ -257,9 +256,11 @@ export default class Application extends Component {
   lose() {
     new Audio('/static/boom.mp3').play();
     this.setState({
-      message: 'Incorrect! You lose.',
+      message: 'Incorrect! You lose. Click here to start a new game.',
       showModal: true,
       count: '--',
+      colors: [],
+      indexes: [],
       sequenceActive: false,
       started: false,
       gameOver: true,
@@ -272,7 +273,7 @@ export default class Application extends Component {
   replay() {
     new Audio('/static/boom.mp3').play();
     this.setState({
-      message: 'Incorrect! Replaying the sequence.',
+      message: 'Incorrect! Click here to replay the sequence.',
       showModal: true,
       selectedIndexes: [],
       sequenceActive: true,
@@ -322,21 +323,21 @@ export default class Application extends Component {
       <div>
         {showModal ? modal : ''}
         <div id="app-container" style={showModal ? { opacity: '0.3' } : {}} >
-          <Wedge index={1} color="red" {...wedgeProps} />
-          <Wedge index={2} color="blue" {...wedgeProps} />
-          <Wedge index={3} color="yellow" {...wedgeProps} />
-          <Wedge index={4} color="green" {...wedgeProps} />
+          <Wedge object={this.generateColorObject(1)} color="red" {...wedgeProps} />
+          <Wedge object={this.generateColorObject(2)} color="blue" {...wedgeProps} />
+          <Wedge object={this.generateColorObject(3)} color="yellow" {...wedgeProps} />
+          <Wedge object={this.generateColorObject(4)} color="green" {...wedgeProps} />
           <div id="center-border-container" />
           <div id="center-container">
             <div id="label-container">Simon</div>
             <div id="settings-container">
               <div className="setting-row">
-                <div className="setting-row-item" >
+                <div className="setting-row-item" style={{ width: '50px' }}>
                   <div id="counter" >{count}</div>
                   <div className="label" style={{ width: '60px' }} >Count</div>
                 </div>
                 <div className="setting-row-item" style={{ marginLeft: '20px' }}>
-                  <div id="start-button" onClick={() => this.randomColors(count)} />
+                  <div id="start-button" onClick={() => this.start()} />
                   <span className="label" >Start</span>
                 </div>
                 <div className="setting-row-item">
@@ -347,7 +348,7 @@ export default class Application extends Component {
               </div>
               <div className="setting-row">
                 <div id="switch-container">
-                  <span className="switch-child" >1</span>
+                  <span className="switch-child" >Slow</span>
                   <div className="switch-child shadow" id="difficulty-switch-container">
                     <div
                       style={{ marginLeft: this.findDifficultyMargin() }}
@@ -355,7 +356,7 @@ export default class Application extends Component {
                       onClick={this.incrementDifficulty}
                     />
                   </div>
-                  <span className="switch-child">3</span>
+                  <span className="switch-child">Fast</span>
                 </div>
                 <div id="switch-container">
                   <span className="switch-child" >OFF</span>

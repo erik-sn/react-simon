@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Alfa+Slab+One|VT323|Oswald');
+@import url('https://fonts.googleapis.com/css?family=Alfa+Slab+One|Lato|Oswald');
 $font: Open Sans, Arial;
 
 @font-face {
@@ -60,7 +60,6 @@ $font: Open Sans, Arial;
   width: 250px;
   left: $left * 280px;
   bottom: $bottom * 280px;
-  cursor: pointer;
 }
 
 @mixin active-shadow($background, $shadow) {
@@ -134,14 +133,14 @@ body {
 #counter {
   @include border-shadow(3px);
   font-family: 'digital';
-  height: 40px;
-  line-height: 40px;
   width: 60px;
+  height: 40px;
   background-color: black;
   color: red;
   border-radius: 8px;
   text-align: center;
-  font-size: 50px;
+  font-size: 35px;
+  line-height: 40px;
 }
 
 #start-button {
@@ -161,7 +160,7 @@ body {
   width: 6px;
   border-radius: 50%;
   background-color: black;
-  margin-left: 19px;
+  margin-left: 20px;
   margin-bottom: 10px;
 }
 
@@ -221,9 +220,13 @@ body {
   transition: background-color 0.15s ease-in;
 }
 
-.blue-active:active{
+.blue-active {
+  transition: background-color 1.5s ease-in-out !important;
+}
+
+.blue-active:active {
   @include active-shadow(hsl(240, 65%, 65%), blue);
-  transition: background-color .15s ease-out;
+  transition: background-color 0s ease-in !important;
 }
 
 #red-container {
@@ -233,9 +236,13 @@ body {
   transition: background-color 0.15s ease-in;
 }
 
+.red-active {
+  transition: background-color 1.5s ease-in-out !important;
+}
+
 .red-active:active {
   @include active-shadow(hsl(0, 65%, 65%), red);
-  transition: background-color .15s ease-out;
+  transition: background-color 0s ease-in !important;
 }
 
 #green-container {
@@ -243,12 +250,15 @@ body {
   background-color: hsl(120, 100%, 25%);
   border-top-left-radius : 100%;
   transition: background-color 0.15s ease-in;
+}
 
+.green-active {
+  transition: background-color 1.5s ease-in-out !important;
 }
 
 .green-active:active {
   @include active-shadow(hsl(49, 100%, 80%), green);
-  transition: background-color .15s ease-out;
+  transition: background-color 0s ease-in !important;
 }
 
 #yellow-container {
@@ -258,9 +268,13 @@ body {
   transition: background-color 0.15s ease-in;
 }
 
+.yellow-active {
+  transition: background-color 1.5s ease-in-out !important;
+}
+
 .yellow-active:active {
-  @include active-shadow(hsl(120, 100%, 65%), yellow);
-  transition: background-color .15s ease-out;
+  @include active-shadow(hsl(120, 100%, 90%), yellow);
+  transition: background-color 0s ease-in !important;
 }
 
 .shadow{
@@ -291,16 +305,18 @@ body {
 
 .modal {
   @include center();
-  @include blur(25px);
-  color: black;
+  color: whitesmoke;
   display: block !important;
   z-index: 2;
   height: 150px;
   width: 525px;
-  background-color: white;
+  background-color: #191919;
   padding: 25px;
-  font-family: 'sans-serif';
-  font-size: 24px;
+  font-family: 'Lato';
+  font-size: 10px !important;
   text-align: center;
-  border: 2px solid black;
+  border: 1px solid whitesmoke;
+  -webkit-box-shadow: 0px 0px 15 0px rgba(245,245,245,0.2);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(245,245,245,0.2);
+  box-shadow: 0px 0px 15px 0px rgba(245,245,245,0.2);
 }
