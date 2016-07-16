@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import Modal from './modal';
 import Footer from './footer';
 import Wedge from './wedge';
+import Button from './button';
 import { Exception } from '../utility/functions';
 
 export default class Application extends Component {
@@ -336,14 +337,10 @@ export default class Application extends Component {
                   <div id="counter" >{count}</div>
                   <div className="label" style={{ width: '60px' }} >Count</div>
                 </div>
-                <div className="setting-row-item" style={{ marginLeft: '20px' }}>
-                  <div id="start-button" onClick={() => this.start()} />
-                  <span className="label" >Start</span>
-                </div>
+                <Button id="start-button" label="Start" click={() => this.start()} style={{ marginLeft: '20px' }} />
                 <div className="setting-row-item">
                   <div id="strict-mode" style={{ backgroundColor: strict ? '#FF1177' : 'black' }} />
-                  <div id="strict-button" onClick={() => this.setState({ strict: !strict })} />
-                  <span className="label" >Strict</span>
+                  <Button id="strict-button" label="Strict" click={() => this.setState({ strict: !strict })} />
                 </div>
               </div>
               <div className="setting-row">
