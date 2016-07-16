@@ -66,7 +66,6 @@ export default class Application extends Component {
       showModal: false,
       message: '',
       on: true,
-      strict: false,
       started: false,
       sequenceActive: false,
       activeColor: undefined,
@@ -236,7 +235,7 @@ export default class Application extends Component {
    * @param  {number} count
    */
   win(count) {
-    new Audio('/static/ding.mp3').play();
+    new Audio('/simon/resources/ding.mp3').play();
     if (count === 20) {
       this.setState({
         message: 'You Win! Congratulations! Click here to start a new game.',
@@ -258,7 +257,7 @@ export default class Application extends Component {
    * Set the game state back to default
    */
   lose() {
-    new Audio('/static/boom.mp3').play();
+    new Audio('/simon/resources/boom.mp3').play();
     this.setState({
       message: 'Incorrect! You lose. Click here to start a new game.',
       showModal: true,
@@ -275,7 +274,7 @@ export default class Application extends Component {
    * Replay the current sequence
    */
   replay() {
-    new Audio('/static/boom.mp3').play();
+    new Audio('/simon/resources/boom.mp3').play();
     this.setState({
       message: 'Incorrect! Click here to replay the sequence.',
       showModal: true,

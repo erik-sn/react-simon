@@ -3,7 +3,7 @@ $font: Open Sans, Arial;
 
 @font-face {
   font-family:"Digital";
-  src: url("/static/digital.ttf") /* TTF file for CSS3 browsers */
+  src: url("/simon/resources/digital.ttf") /* TTF file for CSS3 browsers */
 }
 
 @mixin noSelect() {
