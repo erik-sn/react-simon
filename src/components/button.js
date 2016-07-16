@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Footer = (props) => {
+const Button = (props) => {
   const { click, label, id, style } = props;
   return (
     <div className="setting-row-item" style={style}>
@@ -10,4 +10,4 @@ const Footer = (props) => {
   );
 }
 
-export default Footer;
+export default Button;

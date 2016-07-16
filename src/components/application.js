@@ -7,6 +7,9 @@ import Modal from './modal';
 import Footer from './footer';
 import Wedge from './wedge';
 import Button from './button';
+import Counter from './counter';
+import Switch from './switch';
+
 import { Exception } from '../utility/functions';
 
 export default class Application extends Component {
@@ -333,10 +336,7 @@ export default class Application extends Component {
             <div id="label-container">Simon</div>
             <div id="settings-container">
               <div className="setting-row">
-                <div className="setting-row-item" style={{ width: '50px' }}>
-                  <div id="counter" >{count}</div>
-                  <div className="label" style={{ width: '60px' }} >Count</div>
-                </div>
+                <Counter count={count} style={{ width: '60px' }} />
                 <Button id="start-button" label="Start" click={() => this.start()} style={{ marginLeft: '20px' }} />
                 <div className="setting-row-item">
                   <div id="strict-mode" style={{ backgroundColor: strict ? '#FF1177' : 'black' }} />
@@ -344,28 +344,20 @@ export default class Application extends Component {
                 </div>
               </div>
               <div className="setting-row">
-                <div id="switch-container">
-                  <span className="switch-child" >Slow</span>
-                  <div className="switch-child shadow" id="difficulty-switch-container">
-                    <div
-                      style={{ marginLeft: this.findDifficultyMargin() }}
-                      id="onoff-switch"
-                      onClick={this.incrementDifficulty}
-                    />
-                  </div>
-                  <span className="switch-child">Fast</span>
-                </div>
-                <div id="switch-container">
-                  <span className="switch-child" >OFF</span>
-                  <div className="switch-child shadow" id="onoff-switch-container">
-                    <div
-                      style={{ float: on ? 'right' : 'left' }}
-                      id="onoff-switch"
-                      onClick={() => this.togglePower()}
-                    />
-                  </div>
-                  <span className="switch-child">ON</span>
-                </div>
+                <Switch
+                  style={{ marginLeft: this.findDifficultyMargin() }}
+                  id="difficulty-switch-container"
+                  click={this.incrementDifficulty}
+                  label1="Slow"
+                  label2="Fast"
+                />
+                <Switch
+                  style={{ float: on ? 'right' : 'left' }}
+                  id="onoff-switch-container"
+                  click={() => this.togglePower()}
+                  label1="OFF"
+                  label2="ON"
+                />
               </div>
             </div>
           </div>
