@@ -9,7 +9,6 @@
     "test:watch": "npm run test -- --watch",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "build": "webpack -p --config webpack.production.config.js --progress --profile --colors",
-    "compile": "babel src --out-dir dist",
     "prestart": "babel server.production.js --out-file ./dist/server.final.js",
     "start": "node ./dist/server.final.js"
   },
